@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  login:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Git clone repository
@@ -22,29 +22,27 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.ACCESS_TOKEN }}
-          
-  build:
-    runs-on: ubuntu-latest
-    needs: [login]
-    steps: 
-    - name: git clone from repo
-      uses: actions/checkout@v2
+        
     - name: build image
       run: |
         docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        docker push ${{secrets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker push ${{ serets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
     
   deploy:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.ACCESS_TOKEN }}
     - name: deploy to AWS
       run: |
         echo "${{ secrets.PRIVATE_KEY }}" > private_key && chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_PUBLIC_IP }} '
-          docker-compose up -d
+        ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_PUBLIC_IP }}'
+          docker run -d -p 3000:3000 ${{ secrets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           '
-      #how to connect github with AWS-KEY 
    
     
         
