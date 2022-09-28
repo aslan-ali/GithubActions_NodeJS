@@ -43,6 +43,5 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_PUBLIC_IP }}'
           docker run -d -p 3000:3000 ${{ secrets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           '
-   
     
         
