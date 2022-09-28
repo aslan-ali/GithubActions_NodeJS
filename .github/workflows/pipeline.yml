@@ -26,7 +26,7 @@ jobs:
     - name: build image
       run: |
         docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        docker push ${{ serets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
     
   deploy:
     runs-on: ubuntu-latest
