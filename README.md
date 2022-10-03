@@ -1,4 +1,4 @@
-#### This project is for the GitLab CI/CD course
+Github Actions Test with Docker
 
 ##### Test
 The project uses jest library for tests. (see "test" script in package.json)
